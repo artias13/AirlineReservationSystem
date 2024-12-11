@@ -17,19 +17,19 @@ def auth_action(action, db_client):
 
 def login_as_admin(db_client):
     ascii_art.ascii_admin_login()
-    name = input("Enter admin name: ")
-    password = input("Enter admin password: ")
+    email = validate_inputs.validate_email(input("Enter the admin's email: "))
+    password = validate_inputs.validate_password(input("Enter the admin's password: "))
 
-    if not name or not password:
+    if not email or not password:
         print("Invalid credentials")
         return False, None, None, None, None
 
-    cursor = db_client.execute("SELECT * FROM users WHERE name = ? AND is_admin = 1", (name,))
+    cursor = db_client.execute("SELECT * FROM users WHERE email = ? AND is_admin = 1", (email,))
     admin_data = cursor.fetchone()
 
     if admin_data:
         # Assuming the order is: id, name, age, email, password, phone_number, is_admin
-        admin = Admin(admin_data[1], admin_data[4])  # Using name and password from DB
+        admin = Admin(admin_data[0], admin_data[1], admin_data[2], admin_data[3], admin_data[4], admin_data[5])
         if admin.authenticate(password):
             print(f"Admin {admin_data[3]} logged in successfully")
             return True, admin_data[0], admin_data[1], admin_data[3], admin_data[6]
@@ -55,23 +55,23 @@ def register_as_admin(db_client):
         """, (name, age, email, password, phone_number, True))
         
         db_client.commit()
-        print("Admin registered successfully")
+        print(f"Admin {email} registered successfully")
     except Exception as e:
         db_client.rollback()
         print(f"Error registering admin: {str(e)}")
 
 def login_as_passenger(db_client):
     ascii_art.ascii_customer_login()
-    name = input("Enter passenger name: ")
-    password = input("Enter passenger password: ")
+    email = validate_inputs.validate_email(input("Enter the passenger email: "))
+    password = validate_inputs.validate_password(input("Enter the passenger password: "))
 
-    if not name or not password:
+    if not email or not password:
         print("Invalid credentials")
         return False, None, None, None, None
 
-    cursor = db_client.execute("SELECT * FROM users WHERE name = ?", (name,))
+    cursor = db_client.execute("SELECT * FROM users WHERE email = ?", (email,))
     passenger_data = cursor.fetchone()
-    print(passenger_data)
+    #print(passenger_data)
 
     if passenger_data:
         passenger = Passenger(
@@ -83,7 +83,7 @@ def login_as_passenger(db_client):
             passenger_data[5]
         )
         if passenger.authenticate(password):
-            print("Passenger logged in successfully")
+            print(f"Passenger {passenger_data[3]} logged in successfully")
             return True, passenger_data[0], passenger_data[1], passenger_data[3], passenger_data[6]
         else:
             print("Invalid credentials")
@@ -106,7 +106,7 @@ def register_as_passenger(db_client):
             VALUES (?, ?, ?, ?, ?, ?)
         """, (name, age, email, password, phone_number, False))
         db_client.commit()
-        print("Passenger registered successfully")
+        print(f"Passenger {email} registered successfully")
     except Exception as e:
         db_client.rollback()
         print(f"Error registering passenger: {str(e)}")

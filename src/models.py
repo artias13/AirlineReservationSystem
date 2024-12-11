@@ -11,8 +11,12 @@ class User(ABC):
         pass
 
 class Admin(User):
-    def __init__(self, name, password):
+    def __init__(self, _id, name, age, email, password=None, phone_number=None):
         super().__init__(name, password)
+        self.id = _id
+        self.age = age
+        self.email = email
+        self.phone_number = phone_number
 
     def authenticate(self, password):
         return self.password == password

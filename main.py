@@ -121,7 +121,7 @@ class ReservationSystem:
     def handle_auth_action(self, db_client, action):
         if action == "login_as_admin" or action == "login_as_passenger":
             auth_result, current_user_id, current_user_name, current_user_email, current_user_role = auth.auth_action(action, db_client)
-            print(f"auth_result: {auth_result}, current_user_id: {current_user_id}, current_user_name: {current_user_name}, current_user_email: {current_user_email}, current_user_role: {current_user_role}")
+            #print(f"auth_result: {auth_result}, current_user_id: {current_user_id}, current_user_name: {current_user_name}, current_user_email: {current_user_email}, current_user_role: {current_user_role}")
             if auth_result:
                 self.menu_system.current_user_id = current_user_id
                 self.menu_system.current_user_name = current_user_name
