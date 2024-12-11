@@ -1,12 +1,24 @@
 # main.py
 
+from src import admin, auth, debug, passenger
 from src.models import Menu, MenuItem, MenuSystem
-from src import auth, admin, passenger, debug
-from src.utils import user_manual, db_client, flight_generator
+from src.utils import db_client, flight_generator, user_manual
 
 
 class ReservationSystem:
+    """
+    The main class responsible for managing the reservation system.
+
+    It initializes the database, sets up menus, and handles user interactions.
+    """
     def __init__(self):
+        """
+        Initializes the ReservationSystem instance.
+
+        Sets up the menu system, database client, flight generator, and creates tables in the database.
+        Generates initial flights and inserts them into the database.
+        Configures the main, admin, and passenger menus.
+        """
         self.menu_system = MenuSystem()
         self.db_client = db_client.DatabaseClient()
         self.flight_generator = flight_generator.RandomFlightGenerator()
@@ -60,11 +72,11 @@ class ReservationSystem:
         #print(f"PRINTING FLIGHTS: {flights}")
         # update flights table
         if flights != []:
-            print(flights)
-            print(f"Generating {len(flights)} flights...")
+            #print(flights)
+            #print(f"Generating {len(flights)} flights...")
             flight_data = [self.flight_generator.prepare_flight_data(flight) for flight in flights]
             #print(f"PRINTING FLIGHT DATA: {flight_data}")
-            print(f"Inserting {len(flights)} flights...")
+            #print(f"Inserting {len(flights)} flights...")
             for flight_data in flights:
                 self.db_client.execute(""" 
                     INSERT INTO flights (flight_schedule, flight_number, available_seats, from_location, to_location, departure_time, arrival_time, flight_time, gate, distance, status)
@@ -119,6 +131,16 @@ class ReservationSystem:
         self.menu_system.add_menu('passenger', passenger_menu)
         
     def handle_auth_action(self, db_client, action):
+        """
+        Handles authentication actions for admins and passengers.
+
+        Args:
+            db_client: The database client instance.
+            action: The authentication action to perform (e.g., login_as_admin, register_as_admin, etc.).
+
+        Returns:
+            None
+        """
         if action == "login_as_admin" or action == "login_as_passenger":
             auth_result, current_user_id, current_user_name, current_user_email, current_user_role = auth.auth_action(action, db_client)
             #print(f"auth_result: {auth_result}, current_user_id: {current_user_id}, current_user_name: {current_user_name}, current_user_email: {current_user_email}, current_user_role: {current_user_role}")
@@ -133,6 +155,18 @@ class ReservationSystem:
             auth.auth_action(action, db_client)
 
     def handle_passenger_action(self, db_client, action, flight_generator=None, menu_system=None):
+        """
+        Handles passenger actions.
+
+        Args:
+            db_client: The database client instance.
+            action: The passenger action to perform.
+            flight_generator: An optional flight generator instance.
+            menu_system: An optional menu system instance.
+
+        Returns:
+            None
+        """
         result = passenger.passenger_action(action, db_client, flight_generator, menu_system)
         if result == "deleted":
             self.menu_system.current_menu = 'main'
@@ -144,6 +178,18 @@ class ReservationSystem:
             pass
 
     def handle_admin_action(self, db_client, action, flight_generator=None, menu_system=None):
+        """
+        Handles admin actions.
+
+        Args:
+            db_client: The database client instance.
+            action: The admin action to perform.
+            flight_generator: An optional flight generator instance.
+            menu_system: An optional menu system instance.
+
+        Returns:
+            None
+        """
         result = admin.admin_action(action, db_client, flight_generator, menu_system)
         if result == "deleted":
             self.menu_system.current_menu = 'main'
@@ -155,6 +201,11 @@ class ReservationSystem:
             pass
 
     def run(self):
+        """
+        Runs the reservation system in an infinite loop until stopped.
+
+        It determines which menu to display based on the user's role.
+        """
         while True:
             if self.menu_system.current_user_email is None:
                 self.menu_system.run_menu('main', self.db_client)

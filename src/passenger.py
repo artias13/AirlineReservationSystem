@@ -8,6 +8,21 @@ from tabulate import tabulate
 logging.basicConfig(level=logging.DEBUG)
 
 def passenger_action(action, db_client, flight_generator, menu_system):
+    """
+    Handles passenger actions based on the given action string.
+
+    Args:
+        action (str): The action to perform (e.g., "book_flight", "update_personal_data", etc.)
+        db_client: The database client instance.
+        flight_generator: An instance of the flight generator class.
+        menu_system: The current menu system instance.
+
+    Raises:
+        ValueError: If an unknown action is provided.
+
+    Returns:
+        str: "deleted" if the delete_account action is performed successfully, otherwise None.
+    """
     logging.debug(f"Passenger action called with action: {action}")
 
     if action == "book_flight":
@@ -27,6 +42,17 @@ def passenger_action(action, db_client, flight_generator, menu_system):
 
 
 def book_flight(db_client, flight_generator, menu_system):
+    """
+    Books a flight for the current passenger.
+
+    Args:
+        db_client: The database client instance.
+        flight_generator: An instance of the flight generator class.
+        menu_system: The current menu system instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_customer_book_flight()
     
     try:
@@ -65,6 +91,16 @@ def book_flight(db_client, flight_generator, menu_system):
 
 
 def update_personal_data(db_client, menu_system):
+    """
+    Updates the personal data of the current passenger.
+
+    Args:
+        db_client: The database client instance.
+        menu_system: The current menu system instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_customer_edit_info()
     name = validate_inputs.validate_non_empty_string(input("Enter new passenger name: "), "Name")
     age = validate_inputs.validate_positive_integer(input("Enter the passenger's age: "), "Age")
@@ -80,6 +116,16 @@ def update_personal_data(db_client, menu_system):
         print(f"Error updating personal data: {str(e)}")
 
 def delete_account(db_client, menu_system):
+    """
+    Deletes the account of the current passenger after confirmation.
+
+    Args:
+        db_client: The database client instance.
+        menu_system: The current menu system instance.
+
+    Returns:
+        str: "deleted" if the account was deleted successfully, otherwise None.
+    """
     ascii_art.ascii_customer_delete_account()
 
     confirmation = input("Are you sure you want to delete your account? (yes/no): ")
@@ -97,6 +143,16 @@ def delete_account(db_client, menu_system):
         print(f"Error deleting account: {str(e)}")
 
 def display_flight_schedule(db_client, flight_generator):
+    """
+    Displays the flight schedule for the passenger.
+
+    Args:
+        db_client: The database client instance.
+        flight_generator: An instance of the flight generator class.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_customer_flight_schedule()
     try:
         # fetch all flights and print them
@@ -109,6 +165,16 @@ def display_flight_schedule(db_client, flight_generator):
 
 
 def cancel_booking(db_client, menu_system):
+    """
+    Cancels a booking made by the current passenger.
+
+    Args:
+        db_client: The database client instance.
+        menu_system: The current menu system instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_customer_cancel_flight()
     
     try:
@@ -163,6 +229,16 @@ def cancel_booking(db_client, menu_system):
         print(f"Error canceling booking: {str(e)}")
 
 def view_my_bookings(db_client, menu_system):
+    """
+    Displays all bookings made by the current passenger.
+
+    Args:
+        db_client: The database client instance.
+        menu_system: The current menu system instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_customer_registered_flights()
 
     try:

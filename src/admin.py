@@ -7,6 +7,21 @@ from tabulate import tabulate
 logging.basicConfig(level=logging.DEBUG)
 
 def admin_action(action, db_client, flight_generator, menu_system):
+    """
+    Handles admin actions based on the given action string.
+
+    Args:
+        action (str): The action to perform (e.g., "add_new_passenger", "search_for_passenger", etc.)
+        db_client: The database client instance.
+        flight_generator (Optional[RandomFlightGenerator]): An optional flight generator instance.
+        menu_system (Optional[MenuSystem]): An optional menu system instance.
+
+    Raises:
+        ValueError: If an unknown action is provided.
+
+    Returns:
+        None
+    """
     logging.debug(f"Admin action called with action: {action}")
     
     if action == "add_new_passenger":
@@ -29,6 +44,17 @@ def admin_action(action, db_client, flight_generator, menu_system):
         raise ValueError("Unknown action")
 
 def add_new_passenger(db_client):
+    """
+    Adds a new passenger to the system.
+
+    Prompts the user for passenger details, validates inputs, and inserts the data into the database.
+
+    Args:
+        db_client: The database client instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_admin_add_new_passenger()
 
     name = validate_inputs.validate_non_empty_string(input("Enter the passenger name: "), "Name")
@@ -55,6 +81,15 @@ def add_new_passenger(db_client):
 
 
 def search_for_passenger(db_client):
+    """
+    Searches for a passenger by email and displays their information.
+
+    Args:
+        db_client: The database client instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_admin_search_for_passenger()
     email = validate_inputs.validate_email(input("Enter the passenger email: "))
     cursor = db_client.execute("SELECT * FROM users WHERE email = ?", (email,))
@@ -78,6 +113,17 @@ def search_for_passenger(db_client):
         print("No passenger found with that email")
 
 def update_passenger_data(db_client):
+    """
+    Updates the data of an existing passenger.
+
+    Prompts the user for new passenger details, validates inputs, and updates the data in the database.
+
+    Args:
+        db_client: The database client instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_admin_update_passenger_data()
     email = validate_inputs.validate_email(input("Enter the passenger email: "))
     cursor = db_client.execute("SELECT * FROM users WHERE email = ?", (email,))
@@ -123,6 +169,17 @@ def update_passenger_data(db_client):
         print("No passenger found with that email")
 
 def delete_passenger(db_client):
+    """
+    Deletes a passenger from the system.
+
+    Prompts the user for confirmation before deleting the passenger.
+
+    Args:
+        db_client: The database client instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_admin_delete_passenger()
     email = validate_inputs.validate_email(input("Enter the passenger email: "))
     cursor = db_client.execute("SELECT * FROM users WHERE email = ?", (email,))
@@ -158,6 +215,17 @@ def delete_passenger(db_client):
         print("No passenger found with that name")
 
 def display_all_passengers(db_client):
+    """
+    Displays all passengers in the system.
+
+    Fetches all passenger data from the database and prints it in a tabular format.
+
+    Args:
+        db_client: The database client instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_admin_display_all_passengers()
     cursor = db_client.execute("SELECT * FROM users WHERE is_admin = 0")
     passengers = cursor.fetchall()
@@ -180,6 +248,18 @@ def display_all_passengers(db_client):
         print("No passengers found")
 
 def display_all_flights_registered_by_passenger(db_client, flight_generator):
+    """
+    Displays all flights registered by a specific passenger.
+
+    Prompts the user for a passenger email, fetches the associated flights, and prints them.
+
+    Args:
+        db_client: The database client instance.
+        flight_generator: An instance of RandomFlightGenerator.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_admin_display_flights_by_passenger()
     
     email = validate_inputs.validate_email(input("Enter the passenger email: "))
@@ -205,6 +285,17 @@ def display_all_flights_registered_by_passenger(db_client, flight_generator):
         print("No passenger found with that email")
 
 def display_registered_passengers_for_flight(db_client):
+    """
+    Displays all passengers registered for a specific flight.
+
+    Prompts the user for a flight number, fetches the associated passengers, and prints them.
+
+    Args:
+        db_client: The database client instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_admin_display_registered_passengers_for_flight()
     
     flight_number = validate_inputs.validate_non_empty_string(input("Enter the flight number: "), "Flight Number")
@@ -238,6 +329,17 @@ def display_registered_passengers_for_flight(db_client):
         print(f"No registered passengers found for Flight {flight_number}")
 
 def delete_flight(db_client):
+    """
+    Deletes a flight from the system.
+
+    Prompts the user for a flight number and removes the corresponding flight from the database.
+
+    Args:
+        db_client: The database client instance.
+
+    Returns:
+        None
+    """
     ascii_art.ascii_admin_delete_flight()
     
     flight_number = validate_inputs.validate_non_empty_string(input("Enter the flight number: "), "Flight Number")

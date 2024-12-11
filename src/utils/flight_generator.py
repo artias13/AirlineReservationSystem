@@ -3,6 +3,13 @@ import datetime
 from tabulate import tabulate
 
 class RandomFlightGenerator:
+    """
+    Class responsible for generating random flight data.
+
+    Attributes:
+        id_counter (int): Counter for generating unique IDs.
+        DESTINATIONS (list): List of tuples containing destination city names and coordinates.
+    """
     def __init__(self):
         self.id_counter = 0
         
@@ -20,14 +27,28 @@ class RandomFlightGenerator:
         # ... Add more destinations as needed
     ]
 
-    #def generate_random_id(self):
-    #    return str(random.randint(100000, 999999))
     def generate_random_id(self):
+        """
+        Generates a unique ID for flights.
+
+        Increments the internal counter and returns the next ID.
+
+        Returns:
+            int: The generated ID.
+        """
         self.id_counter += 1
         return self.id_counter
         
 
     def generate_random_destinations(self):
+        """
+        Generates random origin and destination cities.
+
+        Selects two different cities from the DESTINATIONS list.
+
+        Returns:
+            tuple: Two tuples representing origin and destination cities.
+        """
         random_city1 = random.choice(self.DESTINATIONS)
         random_city2 = random.choice(self.DESTINATIONS)
         
@@ -37,6 +58,17 @@ class RandomFlightGenerator:
         return random_city1, random_city2
 
     def generate_random_flight_number(self, length=6):
+        """
+        Generates a random flight number.
+
+        Creates a flight number consisting of two uppercase letters, a hyphen, and three digits.
+
+        Args:
+            length (int): The total length of the flight number (default is 6).
+
+        Returns:
+            str: The generated flight number.
+        """
         letters = ''.join(chr(i) for i in range(ord('A'), ord('Z')+1))
         digits = ''.join(str(i) for i in range(10))
         
@@ -53,6 +85,14 @@ class RandomFlightGenerator:
 
 
     def generate_random_flight(self):
+        """
+        Generates a random flight data entry.
+
+        Creates a comprehensive flight data entry with realistic values.
+
+        Returns:
+            list: A list containing flight details.
+        """
         city1, lat1, lon1 = random.choice(self.DESTINATIONS)
         city2, lat2, lon2 = random.choice(self.DESTINATIONS)
         
@@ -85,16 +125,34 @@ class RandomFlightGenerator:
         ]
 
     def generate_flights(self, num_flights):
+        """
+        Generates multiple random flights.
+
+        Creates a list of random flight entries.
+
+        Args:
+            num_flights (int): The number of flights to generate.
+
+        Returns:
+            list: A list of random flight entries.
+        """
         if num_flights == 0:
             return []
         return [self.generate_random_flight() for _ in range(num_flights)]
 
     def print_flights(self, flights):
+        """
+        Prints the given flights in a tabular format.
+
+        Args:
+            flights (list): List of flight data entries.
+
+        Returns:
+            None
+        """
         if not flights:
             print("No flights found.")
             return
-        #generator = RandomFlightGenerator()
-        #flights = [generator.generate_random_flight() for _ in range(10)]
         
         # Get the keys from the first dictionary in the list
         headers = ["Flight Schedule", "Flight No.", "Seats", "From", "To", "Departure Time", "Arrival Time", "Flight Time", "Gate", "Distance", "Status"]
@@ -109,7 +167,17 @@ class RandomFlightGenerator:
         )
 
     def prepare_flight_data(self, flight):
-        #print(flight)
+        """
+        Prepares flight data for further processing.
+
+        Converts string representations of dates to datetime objects.
+
+        Args:
+            flight (list): Flight data entry.
+
+        Returns:
+            tuple: Prepared flight data.
+        """
         departure_time = datetime.datetime.strptime(flight[5], '%Y-%m-%d %H:%M:%S')
         arrival_time = datetime.datetime.strptime(flight[6], '%Y-%m-%d %H:%M:%S')
         return (

@@ -1,4 +1,5 @@
 from src.utils import ascii_art
+
 def print_user_manual():
     ascii_art.ascii_user_manual()
     print("""
